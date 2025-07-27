@@ -4,7 +4,7 @@ import { useApp } from "@/context/AppContext";
 import { mockJobs } from "@/data/mockJobs";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Alert,
   SafeAreaView,
@@ -19,15 +19,39 @@ export default function HomeScreen() {
   const colors = Colors[colorScheme ?? "light"];
   const { likeJob, dislikeJob } = useApp();
 
-  const handleLike = (job: any) => {
-    likeJob(job);
-    // Add haptic feedback here if needed
-  };
+  const handleLike = useCallback(
+    (job: any) => {
+      try {
+        if (!job || !job.id) {
+          console.error("Invalid job object in handleLike");
+          return;
+        }
+        console.log("Liking job:", job.id, job.title);
+        likeJob(job);
+      } catch (error) {
+        console.error("Error in handleLike:", error);
+        Alert.alert("Error", "Failed to like the job");
+      }
+    },
+    [likeJob]
+  );
 
-  const handleDislike = (job: any) => {
-    dislikeJob(job);
-    // Add haptic feedback here if needed
-  };
+  const handleDislike = useCallback(
+    (job: any) => {
+      try {
+        if (!job || !job.id) {
+          console.error("Invalid job object in handleDislike");
+          return;
+        }
+        console.log("Disliking job:", job.id, job.title);
+        dislikeJob(job);
+      } catch (error) {
+        console.error("Error in handleDislike:", error);
+        Alert.alert("Error", "Failed to dislike the job");
+      }
+    },
+    [dislikeJob]
+  );
 
   const handleHamburgerMenu = () => {
     Alert.alert("Menu", "Profile and language settings will be here");
@@ -40,6 +64,24 @@ export default function HomeScreen() {
   const handleContact = () => {
     Alert.alert("Contact", "TEL/Mail modal will be here");
   };
+
+  // Validate mockJobs data
+  const validJobs = React.useMemo(() => {
+    if (!Array.isArray(mockJobs)) {
+      console.error("mockJobs is not an array");
+      return [];
+    }
+
+    return mockJobs.filter((job) => {
+      if (!job || !job.id || !job.title) {
+        console.warn("Invalid job found:", job);
+        return false;
+      }
+      return true;
+    });
+  }, []);
+
+  console.log("Valid jobs count:", validJobs.length);
 
   return (
     <SafeAreaView
@@ -67,7 +109,7 @@ export default function HomeScreen() {
       {/* Main Content */}
       <View style={styles.content}>
         <SwipeCards
-          jobs={mockJobs}
+          jobs={validJobs}
           onLike={handleLike}
           onDislike={handleDislike}
         />
