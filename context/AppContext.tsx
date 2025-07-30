@@ -1,3 +1,4 @@
+import { mockJobs } from "@/data/mockJobs";
 import { changeLanguage } from "@/i18n";
 import {
   FilterOptions,
@@ -7,7 +8,14 @@ import {
   SortOption,
   UserProfile,
 } from "@/types";
-import React, { createContext, ReactNode, useContext, useReducer } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react";
 
 interface AppState {
   userProfile: UserProfile | null;
@@ -27,15 +35,18 @@ type AppAction =
   | { type: "SET_JOBS"; payload: Job[] }
   | { type: "LIKE_JOB"; payload: Job }
   | { type: "DISLIKE_JOB"; payload: Job }
+  | { type: "SET_LIKED_JOBS"; payload: Job[] }
+  | { type: "SET_DISLIKED_JOBS"; payload: Job[] }
   | { type: "SET_LANGUAGE"; payload: Language }
   | { type: "SET_FILTER_OPTIONS"; payload: FilterOptions }
   | { type: "SET_SORT_OPTION"; payload: SortOption }
   | { type: "SET_LOADING"; payload: boolean }
-  | { type: "RESET_MATCHES" };
+  | { type: "RESET_MATCHES" }
+  | { type: "LOAD_STORED_DATA"; payload: Partial<AppState> };
 
 const initialState: AppState = {
   userProfile: null,
-  jobs: [],
+  jobs: mockJobs,
   likedJobs: [],
   dislikedJobs: [],
   jobMatches: [],
@@ -48,6 +59,17 @@ const initialState: AppState = {
   },
   sortOption: { type: "postingDate", direction: "desc" },
   isLoading: false,
+};
+
+// Storage keys
+const STORAGE_KEYS = {
+  LIKED_JOBS: "hymatch_liked_jobs",
+  DISLIKED_JOBS: "hymatch_disliked_jobs",
+  JOB_MATCHES: "hymatch_job_matches",
+  USER_PROFILE: "hymatch_user_profile",
+  LANGUAGE: "hymatch_language",
+  FILTER_OPTIONS: "hymatch_filter_options",
+  SORT_OPTION: "hymatch_sort_option",
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -96,6 +118,12 @@ function appReducer(state: AppState, action: AppAction): AppState {
         ],
       };
 
+    case "SET_LIKED_JOBS":
+      return { ...state, likedJobs: action.payload };
+
+    case "SET_DISLIKED_JOBS":
+      return { ...state, dislikedJobs: action.payload };
+
     case "SET_LANGUAGE":
       changeLanguage(action.payload);
       return { ...state, currentLanguage: action.payload };
@@ -117,6 +145,9 @@ function appReducer(state: AppState, action: AppAction): AppState {
         jobMatches: [],
       };
 
+    case "LOAD_STORED_DATA":
+      return { ...state, ...action.payload };
+
     default:
       return state;
   }
@@ -132,12 +163,100 @@ interface AppContextType {
   setFilterOptions: (options: FilterOptions) => void;
   setSortOption: (option: SortOption) => void;
   resetMatches: () => void;
+  saveToStorage: () => Promise<void>;
+  loadFromStorage: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+  // Save data to AsyncStorage
+  const saveToStorage = async () => {
+    try {
+      await AsyncStorage.multiSet([
+        [STORAGE_KEYS.LIKED_JOBS, JSON.stringify(state.likedJobs)],
+        [STORAGE_KEYS.DISLIKED_JOBS, JSON.stringify(state.dislikedJobs)],
+        [STORAGE_KEYS.JOB_MATCHES, JSON.stringify(state.jobMatches)],
+        [STORAGE_KEYS.USER_PROFILE, JSON.stringify(state.userProfile)],
+        [STORAGE_KEYS.LANGUAGE, JSON.stringify(state.currentLanguage)],
+        [STORAGE_KEYS.FILTER_OPTIONS, JSON.stringify(state.filterOptions)],
+        [STORAGE_KEYS.SORT_OPTION, JSON.stringify(state.sortOption)],
+      ]);
+    } catch (error) {
+      console.error("Error saving to storage:", error);
+    }
+  };
+
+  // Load data from AsyncStorage
+  const loadFromStorage = async () => {
+    try {
+      const [
+        likedJobsStr,
+        dislikedJobsStr,
+        jobMatchesStr,
+        userProfileStr,
+        languageStr,
+        filterOptionsStr,
+        sortOptionStr,
+      ] = await AsyncStorage.multiGet([
+        STORAGE_KEYS.LIKED_JOBS,
+        STORAGE_KEYS.DISLIKED_JOBS,
+        STORAGE_KEYS.JOB_MATCHES,
+        STORAGE_KEYS.USER_PROFILE,
+        STORAGE_KEYS.LANGUAGE,
+        STORAGE_KEYS.FILTER_OPTIONS,
+        STORAGE_KEYS.SORT_OPTION,
+      ]);
+
+      const storedData: Partial<AppState> = {};
+
+      if (likedJobsStr[1]) {
+        storedData.likedJobs = JSON.parse(likedJobsStr[1]);
+      }
+      if (dislikedJobsStr[1]) {
+        storedData.dislikedJobs = JSON.parse(dislikedJobsStr[1]);
+      }
+      if (jobMatchesStr[1]) {
+        storedData.jobMatches = JSON.parse(jobMatchesStr[1]);
+      }
+      if (userProfileStr[1]) {
+        storedData.userProfile = JSON.parse(userProfileStr[1]);
+      }
+      if (languageStr[1]) {
+        storedData.currentLanguage = JSON.parse(languageStr[1]);
+      }
+      if (filterOptionsStr[1]) {
+        storedData.filterOptions = JSON.parse(filterOptionsStr[1]);
+      }
+      if (sortOptionStr[1]) {
+        storedData.sortOption = JSON.parse(sortOptionStr[1]);
+      }
+
+      dispatch({ type: "LOAD_STORED_DATA", payload: storedData });
+    } catch (error) {
+      console.error("Error loading from storage:", error);
+    }
+  };
+
+  // Load data on app start
+  useEffect(() => {
+    loadFromStorage();
+  }, []);
+
+  // Save data whenever relevant state changes
+  useEffect(() => {
+    saveToStorage();
+  }, [
+    state.likedJobs,
+    state.dislikedJobs,
+    state.jobMatches,
+    state.userProfile,
+    state.currentLanguage,
+    state.filterOptions,
+    state.sortOption,
+  ]);
 
   const likeJob = (job: Job) => {
     dispatch({ type: "LIKE_JOB", payload: job });
@@ -177,6 +296,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setFilterOptions,
     setSortOption,
     resetMatches,
+    saveToStorage,
+    loadFromStorage,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

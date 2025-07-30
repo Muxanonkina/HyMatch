@@ -1,12 +1,15 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React from "react";
-import { Platform } from "react-native";
+import { useColorScheme } from "react-native";
 
-import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import TabBarBackground from "@/components/ui/TabBarBackground.ios";
 import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
+
+function TabBarIcon(props: {
+  name: React.ComponentProps<typeof Ionicons>["name"];
+  color: string;
+}) {
+  return <Ionicons size={28} style={{ marginBottom: -3 }} {...props} />;
+}
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -15,45 +18,52 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        ...(Platform.OS === "ios" && {
-          tabBarBackground: () => <TabBarBackground />,
-        }),
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
-          },
-          default: {},
-        }),
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "HyMatch",
+          title: "Swipe",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <TabBarIcon name="swap-horizontal" color={color} />
           ),
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="explore"
+        options={{
+          title: "Search",
+          tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
         name="liked"
         options={{
-          title: "Choose",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="heart.fill" color={color} />
-          ),
+          title: "Liked",
+          tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
         name="disliked"
         options={{
-          title: "Refuse",
+          title: "Disliked",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="xmark.circle.fill" color={color} />
+            <TabBarIcon name="close-circle" color={color} />
           ),
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="settings" color={color} />
+          ),
+          headerShown: false,
         }}
       />
     </Tabs>
