@@ -11,7 +11,7 @@ import Animated, {
 import { Job } from "../types";
 import { JobCard } from "./JobCard";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 const SWIPE_THRESHOLD = width * 0.25;
 
 type SwipeCardProps = {
@@ -93,24 +93,24 @@ export function SwipeCards({
 }
 
 const styles = StyleSheet.create({
-  card: {
-    position: "absolute",
-    width: "90%", // не на весь экран
-    height: "75%", // занимаем большую часть по высоте
-    borderRadius: 16, // скругляем углы
-    backgroundColor: "#fff", // фон
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4, // тень на Android
-    overflow: "hidden", // чтобы контент не выходил за края
-  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 0, // remove extra padding
+    backgroundColor: "#f8f8f8", // нейтральный фон
+  },
+  card: {
+    position: "absolute",
+    width: "90%",
+    aspectRatio: 3 / 4, // вместо фиксированной высоты — сохраняем пропорции (под Tinder-like UI)
+    borderRadius: 20,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 5,
+    overflow: "hidden",
   },
   noMoreCards: {
     flex: 1,
