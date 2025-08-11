@@ -1,4 +1,5 @@
-import { Dimensions, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
@@ -53,9 +54,67 @@ export function SwipeCard({ job, onSwipeLeft, onSwipeRight }: SwipeCardProps) {
   );
 }
 
+type SwipeCardsProps = {
+  jobs: Job[];
+  onSwipeLeft: (job: Job) => void;
+  onSwipeRight: (job: Job) => void;
+};
+
+export function SwipeCards({
+  jobs,
+  onSwipeLeft,
+  onSwipeRight,
+}: SwipeCardsProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleSwipeLeft = () => {
+    onSwipeLeft(jobs[currentIndex]);
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  const handleSwipeRight = () => {
+    onSwipeRight(jobs[currentIndex]);
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  if (currentIndex >= jobs.length) {
+    return <View style={styles.noMoreCards} />;
+  }
+
+  return (
+    <View style={styles.container}>
+      <SwipeCard
+        job={jobs[currentIndex]}
+        onSwipeLeft={handleSwipeLeft}
+        onSwipeRight={handleSwipeRight}
+      />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   card: {
     position: "absolute",
-    width: "100%",
+    width: "90%", // не на весь экран
+    height: "75%", // занимаем большую часть по высоте
+    borderRadius: 16, // скругляем углы
+    backgroundColor: "#fff", // фон
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4, // тень на Android
+    overflow: "hidden", // чтобы контент не выходил за края
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 0, // remove extra padding
+  },
+  noMoreCards: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

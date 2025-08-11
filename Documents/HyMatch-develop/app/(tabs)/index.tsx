@@ -143,16 +143,11 @@ export default function HomeScreen() {
     }
 
     return (
-      <>
-        {state.jobs.map((job) => (
-          <SwipeCard
-            key={job.id}
-            job={job}
-            onSwipeLeft={() => handleDislike(job)}
-            onSwipeRight={() => handleLike(job)}
-          />
-        ))}
-      </>
+      <SwipeCard
+        job={currentJob}
+        onSwipeLeft={() => handleDislike(currentJob)}
+        onSwipeRight={() => handleLike(currentJob)}
+      />
     );
   };
 

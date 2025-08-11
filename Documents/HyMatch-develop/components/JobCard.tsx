@@ -153,18 +153,17 @@ export function JobCard({ job }: JobCardProps) {
 
 const styles = StyleSheet.create({
   container: {
-    width: width * 0.9,
-    maxWidth: 350,
+    width: Math.min(width * 0.95, 380), // wider card, max 380px
+    alignSelf: "center", // center the card
     borderRadius: 20,
     padding: 20,
+    backgroundColor: "#fff",
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    marginVertical: 16, // add vertical margin
   },
   header: {
     flexDirection: "row",
