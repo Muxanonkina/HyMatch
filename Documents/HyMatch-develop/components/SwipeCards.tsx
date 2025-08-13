@@ -9,6 +9,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 import { Job } from "../types";
 import { JobCard } from "./JobCard";
@@ -18,27 +19,46 @@ const SWIPE_THRESHOLD = width * 0.25;
 
 type SwipeCardProps = {
   job: Job;
+  index: number;
   onSwipeLeft: () => void;
   onSwipeRight: () => void;
 };
 
-export function SwipeCard({ job, onSwipeLeft, onSwipeRight }: SwipeCardProps) {
+function SwipeCard({ job, index, onSwipeLeft, onSwipeRight }: SwipeCardProps) {
   const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const opacityOverlay = useSharedValue(0);
 
   const gestureHandler = useAnimatedGestureHandler({
     onActive: (event) => {
       translateX.value = event.translationX;
+      translateY.value = event.translationY;
+
+      // Плавное появление оверлея
+      opacityOverlay.value = interpolate(
+        Math.abs(translateX.value),
+        [0, SWIPE_THRESHOLD],
+        [0, 1],
+        Extrapolate.CLAMP
+      );
     },
     onEnd: () => {
       const shouldSwipe = Math.abs(translateX.value) > SWIPE_THRESHOLD;
 
       if (shouldSwipe) {
         const toLeft = translateX.value < 0;
-        translateX.value = withSpring(toLeft ? -width : width, {}, () => {
-          runOnJS(toLeft ? onSwipeLeft : onSwipeRight)();
-        });
+        translateX.value = withTiming(
+          toLeft ? -width * 1.5 : width * 1.5,
+          {},
+          () => {
+            opacityOverlay.value = 0; // убрать надпись
+            runOnJS(toLeft ? onSwipeLeft : onSwipeRight)();
+          }
+        );
       } else {
         translateX.value = withSpring(0);
+        translateY.value = withSpring(0);
+        opacityOverlay.value = withTiming(0);
       }
     },
   });
@@ -46,30 +66,31 @@ export function SwipeCard({ job, onSwipeLeft, onSwipeRight }: SwipeCardProps) {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: translateX.value },
+      { translateY: translateY.value },
       { rotate: `${translateX.value / 20}deg` },
+      { scale: 1 - index * 0.05 },
     ],
+    top: index * 10,
+    zIndex: -index,
   }));
 
-  // Overlay for "Choose" and "Refusal"
-  const chooseStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(
+  const chooseStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
       translateX.value,
       [0, SWIPE_THRESHOLD],
       [0, 1],
       Extrapolate.CLAMP
-    );
-    return { opacity };
-  });
+    ),
+  }));
 
-  const refusalStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(
+  const refusalStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
       translateX.value,
       [0, -SWIPE_THRESHOLD],
       [0, 1],
       Extrapolate.CLAMP
-    );
-    return { opacity };
-  });
+    ),
+  }));
 
   return (
     <PanGestureHandler onGestureEvent={gestureHandler}>
@@ -85,6 +106,7 @@ export function SwipeCard({ job, onSwipeLeft, onSwipeRight }: SwipeCardProps) {
         >
           <Text style={styles.refusalText}>Refusal</Text>
         </Animated.View>
+
         <JobCard job={job} />
       </Animated.View>
     </PanGestureHandler>
@@ -102,57 +124,32 @@ export function SwipeCards({
   onSwipeLeft,
   onSwipeRight,
 }: SwipeCardsProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [cards, setCards] = useState(jobs);
 
-  const handleSwipeLeft = () => {
-    onSwipeLeft(jobs[currentIndex]);
-    setCurrentIndex((prev) => prev + 1);
+  const handleSwipeLeft = (index: number) => {
+    const swipedJob = cards[index];
+    setCards((prev) => prev.filter((_, i) => i !== index));
+    onSwipeLeft(swipedJob);
   };
 
-  const handleSwipeRight = () => {
-    onSwipeRight(jobs[currentIndex]);
-    setCurrentIndex((prev) => prev + 1);
+  const handleSwipeRight = (index: number) => {
+    const swipedJob = cards[index];
+    setCards((prev) => prev.filter((_, i) => i !== index));
+    onSwipeRight(swipedJob);
   };
-
-  if (currentIndex >= jobs.length) {
-    return <View style={styles.noMoreCards} />;
-  }
-
-  // Show up to 3 cards in the stack
-  const cardsToShow = jobs.slice(currentIndex, currentIndex + 3);
 
   return (
     <View style={styles.container}>
-      {cardsToShow
-        .map((job, i) => {
-          if (i === 0) {
-            return (
-              <SwipeCard
-                key={job.id}
-                job={job}
-                onSwipeLeft={handleSwipeLeft}
-                onSwipeRight={handleSwipeRight}
-              />
-            );
-          }
-          return (
-            <View
-              key={job.id}
-              style={[
-                styles.card,
-                {
-                  top: i * 10,
-                  zIndex: -i,
-                  transform: [{ scale: 1 - i * 0.05 }],
-                  position: "absolute",
-                },
-              ]}
-              pointerEvents="none"
-            >
-              <JobCard job={job} />
-            </View>
-          );
-        })
+      {cards
+        .map((job, i) => (
+          <SwipeCard
+            key={job.id}
+            job={job}
+            index={i}
+            onSwipeLeft={() => handleSwipeLeft(i)}
+            onSwipeRight={() => handleSwipeRight(i)}
+          />
+        ))
         .reverse()}
     </View>
   );
@@ -213,10 +210,5 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: "bold",
     textAlign: "center",
-  },
-  noMoreCards: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
