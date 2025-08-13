@@ -81,13 +81,46 @@ export function SwipeCards({
     return <View style={styles.noMoreCards} />;
   }
 
+  // Show up to 3 cards in the stack
+  const cardsToShow = jobs.slice(currentIndex, currentIndex + 3);
+
   return (
     <View style={styles.container}>
-      <SwipeCard
-        job={jobs[currentIndex]}
-        onSwipeLeft={handleSwipeLeft}
-        onSwipeRight={handleSwipeRight}
-      />
+      {
+        cardsToShow
+          .map((job, i) => {
+            // The top card is interactive, others are just for stack effect
+            if (i === 0) {
+              return (
+                <SwipeCard
+                  key={job.id}
+                  job={job}
+                  onSwipeLeft={handleSwipeLeft}
+                  onSwipeRight={handleSwipeRight}
+                />
+              );
+            }
+            // Stack effect: scale and vertical offset for next cards
+            return (
+              <View
+                key={job.id}
+                style={[
+                  styles.card,
+                  {
+                    top: i * 10,
+                    zIndex: -i,
+                    transform: [{ scale: 1 - i * 0.05 }],
+                    position: "absolute",
+                  },
+                ]}
+                pointerEvents="none"
+              >
+                <JobCard job={job} />
+              </View>
+            );
+          })
+          .reverse() // so the top card is rendered last (on top)
+      }
     </View>
   );
 }
