@@ -49,7 +49,12 @@ const resources = {
       fri: "金",
       sat: "土",
       sun: "日",
-
+      //Profile_creating
+      createProfile: "プロフィール作成",
+      editProfile: "プロフィール編集",
+      uploadPhoto: "写真をアップロード",
+      saveChanges: "変更を保存",
+      cancelChanges: "変更をキャンセル",
       // Profile
       basicInfo: "基本情報",
       firstName: "名",
@@ -172,6 +177,12 @@ const resources = {
       sat: "Sat",
       sun: "Sun",
 
+      //Create_Profile
+      createProfile: "Create Profile",
+      editProfile: "Edit Profile",
+      uploadPhoto: "Upload Photo",
+      saveChanges: "Save Changes",
+      cancelChanges: "Cancel Changes",
       // Profile
       basicInfo: "Basic Information",
       firstName: "First Name",
@@ -293,7 +304,12 @@ const resources = {
       fri: "Jum",
       sat: "Shan",
       sun: "Yak",
-
+      //Create_Profile
+      createProfile: "Profil yaratish",
+      editProfile: "Profilni tahrirlash",
+      uploadPhoto: "Rasm yuklash",
+      saveChanges: "O'zgarishlarni saqlash",
+      cancelChanges: "O'zgarishlarni bekor qilish",
       // Profile
       basicInfo: "Asosiy ma'lumotlar",
       firstName: "Ism",

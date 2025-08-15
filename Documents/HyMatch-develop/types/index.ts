@@ -27,7 +27,7 @@ export type JobType =
   | "office"
   | "retail";
 
-export type JapaneseLevel = "N1" | "N2" | "N3" | "N4" | "N5";
+export type JapaneseLevel = "" | "N1" | "N2" | "N3" | "N4" | "N5";
 
 export type DayOfWeek = "MON" | "TUE" | "WED" | "THU" | "FRI" | "SAT" | "SUN";
 
@@ -38,6 +38,7 @@ export interface UserProfile {
     lastName: string;
     age: number;
     profilePhoto?: string;
+    bio?: string; // добавлено для работы в editeprofile
   };
   nationality: {
     country: string;

@@ -12,13 +12,13 @@ import {
   View,
 } from "react-native";
 
-import { Colors } from "../../constants/Colors";
-import { useApp } from "../../context/AppContext";
-import { useColorScheme } from "../../hooks/useColorScheme";
-import { Language } from "../../types";
+import { Colors } from "@/constants/Colors";
+import { useApp } from "@/context/AppContext";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { Language } from "@/types";
 
 export default function SettingsScreen() {
-  useTranslation();
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
   const { state, updateUserProfile, setLanguage, resetMatches } = useApp();
@@ -77,19 +77,27 @@ export default function SettingsScreen() {
 
       {state.userProfile ? (
         <View style={styles.profileInfo}>
+          {/* Basic Information */}
           <Text style={[styles.profileText, { color: colors.text }]}>
-            Name: {state.userProfile.basicInfo.firstName}{" "}
-            {state.userProfile.basicInfo.lastName}
+            Name: {state.userProfile.basicInfo?.firstName || ""}{" "}
+            {state.userProfile.basicInfo?.lastName || ""}
           </Text>
           <Text style={[styles.profileText, { color: colors.text }]}>
-            Age: {state.userProfile.basicInfo.age}
+            Age: {state.userProfile.basicInfo?.age || ""}
           </Text>
           <Text style={[styles.profileText, { color: colors.text }]}>
-            Japanese Level: {state.userProfile.other.japaneseLevel}
+            Profile Photo: {state.userProfile.basicInfo?.profilePhoto || ""}
           </Text>
+
+          {/* Japanese Level */}
           <Text style={[styles.profileText, { color: colors.text }]}>
-            Location: {state.userProfile.address.prefecture},{" "}
-            {state.userProfile.address.city1}
+            Japanese Level: {state.userProfile.other?.japaneseLevel || ""}
+          </Text>
+
+          {/* Location */}
+          <Text style={[styles.profileText, { color: colors.text }]}>
+            Location: {state.userProfile.address?.prefecture || ""},{" "}
+            {state.userProfile.address?.city1 || ""}
           </Text>
         </View>
       ) : (
