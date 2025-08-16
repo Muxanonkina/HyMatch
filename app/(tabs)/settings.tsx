@@ -16,6 +16,7 @@ import { Colors } from "@/constants/Colors";
 import { useApp } from "@/context/AppContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Language } from "@/types";
+import ProfileForm from "../../components/ProfileForm";
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
@@ -28,6 +29,11 @@ export default function SettingsScreen() {
   const [darkModeEnabled, setDarkModeEnabled] = useState(
     colorScheme === "dark"
   );
+  const [profile, setProfile] = useState<{
+    name: string;
+    email: string;
+    phone: string;
+  } | null>(null);
 
   const handleLanguageChange = (language: Language) => {
     setLanguage(language);
@@ -69,40 +75,46 @@ export default function SettingsScreen() {
     );
   };
 
-  const renderProfileSection = () => (
-    <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text }]}>
-        Profile Information
-      </Text>
+  const handleSaveProfile = (newProfile: {
+    name: string;
+    email: string;
+    phone: string;
+  }) => {
+    setProfile(newProfile);
+    setIsEditingProfile(false);
+  };
 
-      {state.userProfile ? (
+  const renderProfileSection = () => {
+    if (isEditingProfile) {
+      return <ProfileForm onSaveProfile={handleSaveProfile} />;
+    }
+
+    if (profile) {
+      return (
         <View style={styles.profileInfo}>
           <Text style={[styles.profileText, { color: colors.text }]}>
-            Name: {state.userProfile.basicInfo.firstName}{" "}
-            {state.userProfile.basicInfo.lastName}
+            Name: {profile.name}
           </Text>
           <Text style={[styles.profileText, { color: colors.text }]}>
-            Age: {state.userProfile.basicInfo.age}
+            Email: {profile.email}
           </Text>
           <Text style={[styles.profileText, { color: colors.text }]}>
-            Japanese Level: {state.userProfile.other.japaneseLevel}
-          </Text>
-          <Text style={[styles.profileText, { color: colors.text }]}>
-            Location: {state.userProfile.address.prefecture},{" "}
-            {state.userProfile.address.city1}
+            Phone: {profile.phone}
           </Text>
         </View>
-      ) : (
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: colors.tint }]}
-          onPress={() => setIsEditingProfile(true)}
-        >
-          <Ionicons name="person-add" size={20} color="white" />
-          <Text style={styles.buttonText}>Create Profile</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: colors.tint }]}
+        onPress={() => setIsEditingProfile(true)}
+      >
+        <Ionicons name="person-add" size={20} color="white" />
+        <Text style={styles.buttonText}>Create Profile</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const renderLanguageSection = () => (
     <View style={styles.section}>

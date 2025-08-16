@@ -3,7 +3,8 @@
     "strict": true,
     "jsx": "react-native",
     "target": "esnext",
-    "moduleResolution": "node",
+    "module": "Node16",
+    "moduleResolution": "node16",
     "allowJs": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -12,7 +13,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "customConditions": ["yourCustomCondition"] // Example custom condition
   },
   "exclude": [
     "node_modules",
