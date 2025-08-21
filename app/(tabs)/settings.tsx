@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 58,
+    borderRadius: 8,
     gap: 8,
   },
   buttonText: {
