@@ -2,8 +2,10 @@ import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import {
   Alert,
+  FlatList,
   Image,
   KeyboardAvoidingView,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -24,6 +26,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
   const [nationality, setNationality] = useState("");
   const [gender, setGender] = useState("");
   const [photo, setPhoto] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
@@ -129,6 +132,45 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
         </KeyboardAvoidingView>
       </View>
 
+      {/* 年齢 (Age) */}
+      <View style={styles.row}>
+        <Icon name="cake" size={28} color="#ffb300" style={styles.icon} />
+        <TouchableOpacity
+          style={styles.input}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={{ color: age ? "#000" : "#aaa" }}>
+            {age || "年齢 (Age)"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <FlatList
+              data={Array.from({ length: 45 }, (_, i) => (i + 16).toString())}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => {
+                    setAge(item);
+                    setModalVisible(false);
+                  }}
+                >
+                  <Text style={styles.modalItemText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
+
       {/* Birthday */}
       <View style={styles.row}>
         <Icon
@@ -166,18 +208,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
-        />
-      </View>
-
-      {/* 年齢 (Age) */}
-      <View style={styles.row}>
-        <Icon name="cake" size={28} color="#ffb300" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="年齢 (Age)"
-          value={age}
-          onChangeText={setAge}
-          keyboardType="numeric"
         />
       </View>
 
@@ -274,6 +304,28 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     letterSpacing: 1,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)", // semi-transparent background
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
+    width: "80%",
+    maxHeight: "80%",
+  },
+  modalItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  modalItemText: {
+    fontSize: 18,
+    textAlign: "center",
   },
 });
 
