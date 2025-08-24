@@ -31,7 +31,29 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
   const [lastName, setLastName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [birthday, setBirthday] = useState<string>("");
+  const [nationalityModalVisible, setNationalityModalVisible] = useState(false);
+
+  const nationalities: { name: string; flag: string }[] = [
+    {name:"Uzbekistan",flag:"🇺🇿"},
+    { name: "Japan", flag: "🇯🇵" },
+    { name: "China", flag: "🇨🇳" },
+    { name: "Republic of Korea", flag: "🇰🇷" },
+    { name: "Russian", flag: "🇷🇺" },
+    { name: "United States", flag: "🇺🇸" },
+    { name: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+    { name: "Ireland", flag: "🇮🇪" },
+    { name: "Scotland", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+    { name: "Irish", flag: "🇮🇪" }, // Note: Same flag as Ireland
+    { name: "France", flag: "🇫🇷" },
+    { name: "Germany", flag: "🇩🇪" },
+    { name: "Canada", flag: "🇨🇦" },
+    { name: "Australia", flag: "🇦🇺" },
+    { name: "Brazil", flag: "🇧🇷" },
+    { name: "Mexico", flag: "🇲🇽" },
+    { name: "Spain", flag: "🇪🇸" },
+  ];
   const handleSave = () => {
+    // TODO: Add validation
     onSaveProfile({
       name: `${lastName} ${firstName}`,
       birthday,
@@ -43,6 +65,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
       photo,
     });
   };
+  const setupNationality = (value: string) => {
+    setNationality(value); // Assuming value is the name of the nationality
+    setNationalityModalVisible(false); // Close modal after selection
+  };
+
 
   return (
     <ScrollView style={styles.container}>
@@ -164,6 +191,45 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
                   }}
                 >
                   <Text style={styles.modalItemText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
+
+      {/* 国籍 (Nationality) */}
+      <View style={styles.row}>
+        <Icon name="flag" size={28} color="#007bff" style={styles.icon} />
+        <TouchableOpacity
+          style={styles.input}
+          onPress={() => setNationalityModalVisible(true)}
+        >
+          <Text style={{ color: nationality ? "#000" : "#aaa" }}>
+            {nationality || "国籍 (Nationality)"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <Modal
+        visible={nationalityModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setNationalityModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <FlatList
+              data={nationalities}
+              keyExtractor={(item) => item.name}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => setupNationality(item.name)}
+                >
+                  <View style={styles.nationalityItemContainer}>
+                    <Text style={styles.modalItemText}>{item.name}</Text>
+                    <Text style={styles.flagIcon}>{item.flag}</Text>
+                  </View>
                 </TouchableOpacity>
               )}
             />
@@ -327,6 +393,35 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
+  nationalityItemContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  flagIcon: {
+    fontSize: 20, // Adjust size as needed
+  },
+  genderOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    backgroundColor: "#fafafa",
+    gap: 6,
+  },
+  genderSelected: {
+    borderColor: "#2196f3",
+    backgroundColor: "#e3f2fd",
+  },
+  genderLabel: {
+    fontSize: 16,
+    color: "#444",
+  },
+
 });
 
 export default ProfileForm;
