@@ -27,14 +27,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
   const [gender, setGender] = useState("");
   const [photo, setPhoto] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [name, setName] = useState("");
+  // const [name, setName] = useState("");
   const [lastName, setLastName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [birthday, setBirthday] = useState<string>("");
   const [nationalityModalVisible, setNationalityModalVisible] = useState(false);
 
   const nationalities: { name: string; flag: string }[] = [
-    {name:"Uzbekistan",flag:"🇺🇿"},
+    { name: "Uzbekistan", flag: "🇺🇿" },
     { name: "Japan", flag: "🇯🇵" },
     { name: "China", flag: "🇨🇳" },
     { name: "Republic of Korea", flag: "🇰🇷" },
@@ -69,7 +69,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
     setNationality(value); // Assuming value is the name of the nationality
     setNationalityModalVisible(false); // Close modal after selection
   };
-
 
   return (
     <ScrollView style={styles.container}>
@@ -236,7 +235,39 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
           </View>
         </View>
       </Modal>
-
+      {/* Gender Selection */}
+      <View style={styles.row}>
+        <Icon name="wc" size={28} color="#8a2be2" style={styles.icon} />
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <TouchableOpacity
+            style={[
+              styles.genderOption,
+              gender === "Male" && styles.genderSelected,
+            ]}
+            onPress={() => setGender("Male")}
+          >
+            <Text style={styles.genderLabel}>♂️ 男性</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.genderOption,
+              gender === "Female" && styles.genderSelected,
+            ]}
+            onPress={() => setGender("Female")}
+          >
+            <Text style={styles.genderLabel}>♀️ 女性</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.genderOption,
+              gender === "Other" && styles.genderSelected,
+            ]}
+            onPress={() => setGender("Other")}
+          >
+            <Text style={styles.genderLabel}>その他</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
       {/* Birthday */}
       <View style={styles.row}>
         <Icon
@@ -421,7 +452,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#444",
   },
-
 });
 
 export default ProfileForm;
