@@ -19,11 +19,12 @@ const SWIPE_THRESHOLD = width * 0.25;
 
 type SwipeCardProps = {
   job: Job;
-  onSwipeLeft: () => void;
-  onSwipeRight: () => void;
+onSwipeLeft: () => void;
+ onSwipeRight: () => void;
 };
 
 export function SwipeCard({ job, onSwipeLeft, onSwipeRight }: SwipeCardProps) {
+
   const translateX = useSharedValue(0);
   const [swipeDirection, setSwipeDirection] = React.useState<
     "left" | "right" | null

@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useCallback, useState } from "react";
 import {
   Alert,
+  Dimensions,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -12,6 +13,8 @@ import {
   useColorScheme,
   View,
 } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
@@ -28,7 +31,6 @@ export default function HomeScreen() {
           console.error("Invalid job object in handleLike");
           return;
         }
-        console.log("Liking job:", job.id, job.title);
         likeJob(job);
         setCurrentJobIndex((prev) => prev + 1);
       } catch (error) {
@@ -46,7 +48,6 @@ export default function HomeScreen() {
           console.error("Invalid job object in handleDislike");
           return;
         }
-        console.log("Disliking job:", job.id, job.title);
         dislikeJob(job);
         setCurrentJobIndex((prev) => prev + 1);
       } catch (error) {
@@ -104,7 +105,11 @@ export default function HomeScreen() {
 
   const renderNoMoreJobs = () => (
     <View style={styles.noJobsContainer}>
-      <Ionicons name="checkmark-circle" size={64} color={colors.tint} />
+      <Ionicons
+        name="checkmark-circle"
+        size={width * 0.15}
+        color={colors.tint}
+      />
       <Text style={[styles.noJobsTitle, { color: colors.text }]}>
         Great job!
       </Text>
@@ -131,7 +136,7 @@ export default function HomeScreen() {
         style={[styles.resetButton, { backgroundColor: colors.tint }]}
         onPress={handleReset}
       >
-        <Ionicons name="refresh" size={20} color="white" />
+        <Ionicons name="refresh" size={width * 0.05} color="white" />
         <Text style={styles.resetButtonText}>Start Over</Text>
       </TouchableOpacity>
     </View>
@@ -166,16 +171,16 @@ export default function HomeScreen() {
           onPress={handleHamburgerMenu}
           style={styles.headerButton}
         >
-          <Ionicons name="menu" size={20} color={colors.text} />
+          <Ionicons name="menu" size={width * 0.05} color={colors.text} />
         </TouchableOpacity>
 
         <View style={styles.titleContainer}>
-          <Ionicons name="briefcase" size={20} color={colors.tint} />
+          <Ionicons name="briefcase" size={width * 0.05} color={colors.tint} />
           <Text style={[styles.title, { color: colors.text }]}>HyMatch</Text>
         </View>
 
         <TouchableOpacity onPress={handleFilter} style={styles.headerButton}>
-          <Ionicons name="filter" size={20} color={colors.text} />
+          <Ionicons name="filter" size={width * 0.05} color={colors.text} />
         </TouchableOpacity>
       </View>
 
@@ -214,7 +219,7 @@ export default function HomeScreen() {
         >
           <Ionicons
             name="close-circle"
-            size={26}
+            size={width * 0.07}
             color={!currentJob ? colors.tabIconDefault : "#F44336"}
           />
         </TouchableOpacity>
@@ -224,7 +229,7 @@ export default function HomeScreen() {
           style={[styles.contactButton, { backgroundColor: colors.tint }]}
           disabled={!currentJob}
         >
-          <Ionicons name="call" size={26} color="white" />
+          <Ionicons name="call" size={width * 0.07} color="white" />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -234,7 +239,7 @@ export default function HomeScreen() {
         >
           <Ionicons
             name="heart"
-            size={26}
+            size={width * 0.07}
             color={!currentJob ? colors.tabIconDefault : "#4CAF50"}
           />
         </TouchableOpacity>
@@ -251,34 +256,34 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: width * 0.03,
+    paddingVertical: height * 0.01,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
   },
   headerButton: {
-    padding: 4,
+    padding: width * 0.01,
   },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: width * 0.01,
   },
   title: {
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: "bold",
   },
   progressContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: width * 0.04,
+    paddingVertical: height * 0.01,
   },
   progressText: {
-    fontSize: 12,
+    fontSize: width * 0.03,
     textAlign: "center",
-    marginBottom: 4,
+    marginBottom: height * 0.005,
   },
   progressBar: {
-    height: 4,
+    height: height * 0.005,
     borderRadius: 2,
     overflow: "hidden",
   },
@@ -290,92 +295,68 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  loadingContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 16,
+    paddingHorizontal: width * 0.02,
+    paddingVertical: height * 0.01,
   },
   noJobsContainer: {
     alignItems: "center",
     justifyContent: "center",
-    padding: 32,
+    padding: width * 0.08,
   },
   noJobsTitle: {
-    fontSize: 24,
+    fontSize: width * 0.06,
     fontWeight: "bold",
-    marginTop: 16,
-    marginBottom: 8,
+    marginTop: height * 0.02,
+    marginBottom: height * 0.01,
   },
   noJobsSubtitle: {
-    fontSize: 16,
+    fontSize: width * 0.04,
     textAlign: "center",
-    marginBottom: 24,
+    marginBottom: height * 0.03,
   },
   noJobsStats: {
     flexDirection: "row",
-    gap: 32,
-    marginBottom: 24,
+    gap: width * 0.08,
+    marginBottom: height * 0.03,
   },
   statItem: {
     alignItems: "center",
   },
   statNumber: {
-    fontSize: 24,
+    fontSize: width * 0.06,
     fontWeight: "bold",
   },
   statLabel: {
-    fontSize: 14,
-    marginTop: 4,
+    fontSize: width * 0.035,
+    marginTop: height * 0.005,
   },
   resetButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
-    gap: 8,
+    paddingHorizontal: width * 0.04,
+    paddingVertical: height * 0.015,
+    borderRadius: width * 0.02,
+    gap: width * 0.02,
   },
   resetButtonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: "600",
   },
   bottomNav: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.04,
     borderTopWidth: 1,
     borderTopColor: "#e0e0e0",
   },
   navButton: {
-    padding: 6,
+    padding: width * 0.015,
   },
   contactButton: {
-    padding: 8,
-    borderRadius: 22,
-  },
-  undoButton: {
-    position: "absolute",
-    bottom: 80,
-    right: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    gap: 4,
-  },
-  undoButtonText: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "600",
+    padding: width * 0.02,
+    borderRadius: width * 0.1,
   },
 });
