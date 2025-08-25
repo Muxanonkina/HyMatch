@@ -27,11 +27,27 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
   const [gender, setGender] = useState("");
   const [photo, setPhoto] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  // const [name, setName] = useState("");
   const [lastName, setLastName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [birthday, setBirthday] = useState<string>("");
   const [nationalityModalVisible, setNationalityModalVisible] = useState(false);
+  const [homeType, setHomeType] = useState<string>("");
+  const [walkTime, setWalkTime] = useState<string>("");
+  const [postalCode, setPostalCode] = useState<string>("");
+  const [prefecture, setPrefecture] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [street, setStreet] = useState<string>("");
+  const [japaneseLevel, setJapaneseLevel] = useState<string>("");
+  const [residenceStatusImage, setResidenceStatusImage] = useState<
+    string | null
+  >(null);
+  const [plannedChange, setPlannedChange] = useState<string>("");
+  const [prefectureModalVisible, setPrefectureModalVisible] = useState(false);
+  const [plannedChangeModalVisible, setPlannedChangeModalVisible] =
+    useState(false);
+  const [visaTypeModalVisible, setVisaTypeModalVisible] = useState(false);
+  const [visaType, setVisaType] = useState("");
+  const [certificateImage, setCertificateImage] = useState<string | null>(null);
 
   const nationalities: { name: string; flag: string }[] = [
     { name: "Uzbekistan", flag: "🇺🇿" },
@@ -65,9 +81,60 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
       photo,
     });
   };
+
   const setupNationality = (value: string) => {
     setNationality(value); // Assuming value is the name of the nationality
     setNationalityModalVisible(false); // Close modal after selection
+  };
+
+  const handleAutoFillAddress = () => {
+    // Пример автозаполнения из почтового кода
+    if (postalCode === "1500041") {
+      setPrefecture("東京都");
+      setCity("渋谷区");
+      setStreet("神南1-19-11");
+    } else if (postalCode === "1600022") {
+      setPrefecture("東京都");
+      setCity("新宿区");
+      setStreet("新宿3-1-1");
+    } else {
+      Alert.alert("エラー", "対応する住所が見つかりません");
+    }
+  };
+
+  // Функция загрузки сертификата
+  const handleCertificateUpload = async () => {
+    try {
+      // Открываем галерею для выбора изображения
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, // только фото
+        allowsEditing: true, // можно кадрировать
+        quality: 1, // лучшее качество
+      });
+
+      // Проверяем, выбрал ли пользователь фото
+      if (!result.canceled) {
+        const uri = result.assets[0].uri;
+        setCertificateImage(uri); // сохраняем путь в state
+      }
+    } catch (error) {
+      console.error("Ошибка загрузки сертификата:", error);
+    }
+  };
+
+  // Функция выбора фото для residence status
+  const handleResidenceStatusUpload = async () => {
+    // Открываем галерею
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, // только фото
+      allowsEditing: true, // возможность обрезки
+      quality: 1, // качество
+    });
+
+    // Если пользователь не отменил выбор
+    if (!result.canceled) {
+      setResidenceStatusImage(result.assets[0].uri); // сохраняем путь в state
+    }
   };
 
   return (
@@ -268,6 +335,293 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSaveProfile }) => {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Home → Nearest Station */}
+      <View style={styles.row}>
+        <Icon name="home" size={28} color="#ff9800" style={styles.icon} />
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            {["自宅", "住宅"].map((type) => (
+              <TouchableOpacity
+                key={type}
+                style={[
+                  styles.genderOption,
+                  homeType === type && styles.genderSelected,
+                ]}
+                onPress={() => setHomeType(type)}
+              >
+                <Text style={styles.genderLabel}>{type}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <View style={{ marginTop: 8 }}>
+            <Text style={styles.label}>最寄り駅までの徒歩時間</Text>
+            <FlatList
+              horizontal
+              data={["5分", "10分", "15分", "20分", "25分", "30分"]}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[
+                    styles.genderOption,
+                    walkTime === item && styles.genderSelected,
+                  ]}
+                  onPress={() => setWalkTime(item)}
+                >
+                  <Text style={styles.genderLabel}>{item}</Text>
+                </TouchableOpacity>
+              )}
+              contentContainerStyle={{ gap: 8 }}
+            />
+          </View>
+        </View>
+      </View>
+
+      {/* Postal Code + Address */}
+      <View style={styles.row}>
+        <Icon
+          name="location-on"
+          size={28}
+          color="#ff5722"
+          style={styles.icon}
+        />
+        <View style={{ flex: 1 }}>
+          <TextInput
+            style={styles.input}
+            placeholder="郵便番号 (Postal Code)"
+            value={postalCode}
+            onChangeText={setPostalCode}
+            keyboardType="numeric"
+            maxLength={7}
+          />
+          <TouchableOpacity
+            style={styles.autoFillButton}
+            onPress={handleAutoFillAddress}
+          >
+            <Text style={styles.autoFillButtonText}>住所を自動入力</Text>
+          </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="都道府県 (Prefecture)"
+            value={prefecture}
+            onFocus={() => setPrefectureModalVisible(true)}
+            editable={false}
+          />
+          <Modal
+            visible={prefectureModalVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setPrefectureModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <FlatList
+                  data={prefecture}
+                  keyExtractor={(item) => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.modalItem}
+                      onPress={() => {
+                        setPrefecture(item);
+                        setPrefectureModalVisible(false);
+                      }}
+                    >
+                      <Text style={styles.modalItemText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </View>
+          </Modal>
+          <TextInput
+            style={styles.input}
+            placeholder="市区町村 (City)"
+            value={city}
+            onChangeText={setCity}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="番地・建物 (Street/Building)"
+            value={street}
+            onChangeText={setStreet}
+          />
+        </View>
+      </View>
+
+      {/* Visa Type + Residence Status Upload */}
+      <View style={styles.row}>
+        <Icon name="assignment" size={28} color="#009688" style={styles.icon} />
+        <View style={{ flex: 1 }}>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => setVisaTypeModalVisible(true)}
+          >
+            <Text style={{ color: visaType ? "#000" : "#aaa" }}>
+              {visaType || "在留資格 (Visa Type)"}
+            </Text>
+          </TouchableOpacity>
+          <Modal
+            visible={visaTypeModalVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setVisaTypeModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <FlatList
+                  data={visaType}
+                  keyExtractor={(item) => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.modalItem}
+                      onPress={() => {
+                        setVisaType(item);
+                        setVisaTypeModalVisible(false);
+                      }}
+                    >
+                      <Text style={styles.modalItemText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </View>
+          </Modal>
+          <TouchableOpacity
+            style={styles.uploadButton}
+            onPress={handleResidenceStatusUpload}
+          >
+            <Icon name="photo-camera" size={24} color="#009688" />
+            <Text style={styles.uploadText}>在留カード画像アップロード</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => setPlannedChangeModalVisible(true)}
+          >
+            <Text style={{ color: plannedChange ? "#000" : "#aaa" }}>
+              {plannedChange || "在留資格変更予定 (Planned Change)"}
+            </Text>
+          </TouchableOpacity>
+          <Modal
+            visible={plannedChangeModalVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setPlannedChangeModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <FlatList
+                  data={plannedChange}
+                  keyExtractor={(item) => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.modalItem}
+                      onPress={() => {
+                        setPlannedChange(item);
+                        setPlannedChangeModalVisible(false);
+                      }}
+                    >
+                      <Text style={styles.modalItemText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </View>
+          </Modal>
+        </View>
+      </View>
+      <View style={styles.uploadBlock}>
+        <TouchableOpacity
+          style={styles.uploadButton}
+          onPress={handleResidenceStatusUpload}
+        >
+          <Text style={styles.uploadButtonText}>
+            {residenceStatusImage ? "Изменить фото" : "写真をアップロード"}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Если пользователь выбрал фото – показываем его */}
+        {residenceStatusImage && (
+          <Image
+            source={{ uri: residenceStatusImage }}
+            style={styles.uploadedImage}
+          />
+        )}
+      </View>
+
+      {/* Certificate Upload + Visa Type */}
+      <View style={styles.row}>
+        <Icon
+          name="insert-drive-file"
+          size={28}
+          color="#607d8b"
+          style={styles.icon}
+        />
+        <View style={{ flex: 1 }}>
+          <TouchableOpacity
+            style={styles.uploadButton}
+            onPress={handleCertificateUpload}
+          >
+            <Icon name="file-upload" size={24} color="#607d8b" />
+            <Text style={styles.uploadText}>証明書アップロード</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => setVisaTypeModalVisible(true)}
+          >
+            <Text style={{ color: certificateImage ? "#000" : "#aaa" }}>
+              {certificateImage || "在留資格 (Visa Type)"}
+            </Text>
+          </TouchableOpacity>
+          <Modal
+            visible={visaTypeModalVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setVisaTypeModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <FlatList
+                  data={visaType}
+                  keyExtractor={(item) => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.modalItem}
+                      onPress={() => {
+                        setCertificateImage(item);
+                        setVisaTypeModalVisible(false);
+                      }}
+                    >
+                      <Text style={styles.modalItemText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </View>
+          </Modal>
+        </View>
+      </View>
+
+      {/* Japanese Language Level */}
+      <View style={styles.row}>
+        <Icon name="translate" size={28} color="#3f51b5" style={styles.icon} />
+        <FlatList
+          horizontal
+          data={["N1", "N2", "N3", "N4", "N5"]}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[
+                styles.genderOption,
+                japaneseLevel === item && styles.genderSelected,
+              ]}
+              onPress={() => setJapaneseLevel(item)}
+            >
+              <Text style={styles.genderLabel}>{item}</Text>
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={{ gap: 8 }}
+        />
+      </View>
       {/* Birthday */}
       <View style={styles.row}>
         <Icon
@@ -348,6 +702,20 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 12,
+  },
+  uploadButton: {
+    backgroundColor: "#9c27b0", // фиолетовый
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  uploadButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   avatarPlaceholder: {
     width: 70,
@@ -433,6 +801,12 @@ const styles = StyleSheet.create({
   flagIcon: {
     fontSize: 20, // Adjust size as needed
   },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#333",
+  },
   genderOption: {
     flexDirection: "row",
     alignItems: "center",
@@ -451,6 +825,44 @@ const styles = StyleSheet.create({
   genderLabel: {
     fontSize: 16,
     color: "#444",
+  },
+  uploadText: {
+    fontSize: 16,
+    color: "#000", // или "#aaa"
+    textAlign: "center",
+  },
+  autoFillButton: {
+    backgroundColor: "#9c27b0",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  autoFillButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  uploadBlock: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: "#f9f9f9",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+
+  uploadedImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    marginTop: 10,
+    resizeMode: "cover",
+    borderWidth: 1,
+    borderColor: "#ddd",
   },
 });
 
