@@ -704,7 +704,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   uploadButton: {
-    backgroundColor: "#9c27b0", // фиолетовый
+    backgroundColor: "#B78A52", // Using new tint color
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -745,9 +745,9 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
+    borderColor: "#E4DDCF", // Using new border color
     borderRadius: 8,
-    backgroundColor: "#fafafa",
+    backgroundColor: "#FDFAF6", // Using new paper color
     fontSize: 16,
     paddingVertical: 8,
     paddingHorizontal: 12,
@@ -755,11 +755,11 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 28,
-    backgroundColor: "#ff9800",
+    backgroundColor: "#B78A52", // Using new tint color
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: "center",
-    shadowColor: "#ff9800",
+    shadowColor: "#B78A52",
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 2,
@@ -777,7 +777,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FDFAF6", // Using new paper color
     borderRadius: 10,
     padding: 20,
     width: "80%",
@@ -786,7 +786,7 @@ const styles = StyleSheet.create({
   modalItem: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: "#E4DDCF", // Using new border color
   },
   modalItemText: {
     fontSize: 18,
@@ -805,7 +805,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 8,
-    color: "#333",
+    color: "#40342A", // Using new text color
   },
   genderOption: {
     flexDirection: "row",
@@ -813,18 +813,18 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#E4DDCF", // Using new border color
     borderRadius: 8,
-    backgroundColor: "#fafafa",
+    backgroundColor: "#FDFAF6", // Using new paper color
     gap: 6,
   },
   genderSelected: {
-    borderColor: "#2196f3",
-    backgroundColor: "#e3f2fd",
+    borderColor: "#B78A52", // Using new tint color
+    backgroundColor: "#EFE6D1", // Using new sand color
   },
   genderLabel: {
     fontSize: 16,
-    color: "#444",
+    color: "#40342A", // Using new text color
   },
   uploadText: {
     fontSize: 16,
@@ -832,7 +832,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   autoFillButton: {
-    backgroundColor: "#9c27b0",
+    backgroundColor: "#B78A52", // Using new tint color
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -849,10 +849,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
     padding: 10,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#F6F3EE", // Using new cream color
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#E4DDCF", // Using new border color
   },
 
   uploadedImage: {
@@ -862,7 +862,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     resizeMode: "cover",
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#E4DDCF", // Using new border color
   },
 });
 

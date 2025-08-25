@@ -19,12 +19,11 @@ const SWIPE_THRESHOLD = width * 0.25;
 
 type SwipeCardProps = {
   job: Job;
-onSwipeLeft: () => void;
- onSwipeRight: () => void;
+  onSwipeLeft: () => void;
+  onSwipeRight: () => void;
 };
 
 export function SwipeCard({ job, onSwipeLeft, onSwipeRight }: SwipeCardProps) {
-
   const translateX = useSharedValue(0);
   const [swipeDirection, setSwipeDirection] = React.useState<
     "left" | "right" | null
@@ -127,11 +126,11 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   greenCircle: {
-    borderColor: "#00e676",
+    borderColor: "#A3B18A", // Using new success color
     backgroundColor: "transparent",
   },
   redCircle: {
-    borderColor: "#ff1744",
+    borderColor: "#E07A5F", // Using new danger color
     backgroundColor: "transparent",
   },
   overlayText: {
@@ -142,9 +141,9 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "-10deg" }],
   },
   greenText: {
-    color: "#00e676",
+    color: "#A3B18A", // Using new success color
   },
   redText: {
-    color: "#ff1744",
+    color: "#E07A5F", // Using new danger color
   },
 });

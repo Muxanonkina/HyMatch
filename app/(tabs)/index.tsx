@@ -2,6 +2,7 @@ import { SwipeCard } from "@/components/SwipeCards";
 import { Colors } from "@/constants/Colors";
 import { useApp } from "@/context/AppContext";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useState } from "react";
 import {
   Alert,
@@ -113,18 +114,18 @@ export default function HomeScreen() {
       <Text style={[styles.noJobsTitle, { color: colors.text }]}>
         Great job!
       </Text>
-      <Text style={[styles.noJobsSubtitle, { color: colors.tabIconDefault }]}>
+      <Text style={[styles.noJobsSubtitle, { color: colors.secondaryText }]}>
         You&apos;ve reviewed all available jobs
       </Text>
       <View style={styles.noJobsStats}>
         <View style={styles.statItem}>
-          <Text style={[styles.statNumber, { color: "#4CAF50" }]}>
+          <Text style={[styles.statNumber, { color: colors.success }]}>
             {state.likedJobs.length}
           </Text>
           <Text style={[styles.statLabel, { color: colors.text }]}>Liked</Text>
         </View>
         <View style={styles.statItem}>
-          <Text style={[styles.statNumber, { color: "#F44336" }]}>
+          <Text style={[styles.statNumber, { color: colors.danger }]}>
             {state.dislikedJobs.length}
           </Text>
           <Text style={[styles.statLabel, { color: colors.text }]}>
@@ -165,11 +166,30 @@ export default function HomeScreen() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
     >
+      {/* Gradient Background */}
+      <LinearGradient
+        colors={
+          colorScheme === "dark"
+            ? ["#0f141a", "#0b1117", "#0a0f14"]
+            : ["#f6f3ee", "#f0ece5", "#e8f3fb"]
+        }
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFillObject}
+      />
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={handleHamburgerMenu}
-          style={styles.headerButton}
+          style={[
+            styles.iconPill,
+            {
+              backgroundColor:
+                colorScheme === "dark"
+                  ? "rgba(255,255,255,0.08)"
+                  : "rgba(0,0,0,0.06)",
+            },
+          ]}
         >
           <Ionicons name="menu" size={width * 0.05} color={colors.text} />
         </TouchableOpacity>
@@ -179,7 +199,18 @@ export default function HomeScreen() {
           <Text style={[styles.title, { color: colors.text }]}>HyMatch</Text>
         </View>
 
-        <TouchableOpacity onPress={handleFilter} style={styles.headerButton}>
+        <TouchableOpacity
+          onPress={handleFilter}
+          style={[
+            styles.iconPill,
+            {
+              backgroundColor:
+                colorScheme === "dark"
+                  ? "rgba(255,255,255,0.08)"
+                  : "rgba(0,0,0,0.06)",
+            },
+          ]}
+        >
           <Ionicons name="filter" size={width * 0.05} color={colors.text} />
         </TouchableOpacity>
       </View>
@@ -213,7 +244,15 @@ export default function HomeScreen() {
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity
-          style={styles.navButton}
+          style={[
+            styles.navCircle,
+            {
+              backgroundColor:
+                colorScheme === "dark"
+                  ? "rgba(255, 77, 79, 0.15)"
+                  : "rgba(244, 67, 54, 0.12)",
+            },
+          ]}
           onPress={() => currentJob && handleDislike(currentJob)}
           disabled={!currentJob}
         >
@@ -233,7 +272,15 @@ export default function HomeScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.navButton}
+          style={[
+            styles.navCircle,
+            {
+              backgroundColor:
+                colorScheme === "dark"
+                  ? "rgba(76, 175, 80, 0.18)"
+                  : "rgba(76, 175, 80, 0.12)",
+            },
+          ]}
           onPress={() => currentJob && handleLike(currentJob)}
           disabled={!currentJob}
         >
@@ -257,12 +304,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: width * 0.03,
-    paddingVertical: height * 0.01,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
+    paddingVertical: height * 0.012,
+    borderBottomWidth: 0,
   },
-  headerButton: {
-    padding: width * 0.01,
+  iconPill: {
+    padding: width * 0.02,
+    borderRadius: width * 0.08,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 3,
   },
   titleContainer: {
     flexDirection: "row",
@@ -270,12 +322,12 @@ const styles = StyleSheet.create({
     gap: width * 0.01,
   },
   title: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.045,
     fontWeight: "bold",
   },
   progressContainer: {
     paddingHorizontal: width * 0.04,
-    paddingVertical: height * 0.01,
+    paddingVertical: height * 0.012,
   },
   progressText: {
     fontSize: width * 0.03,
@@ -283,13 +335,14 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.005,
   },
   progressBar: {
-    height: height * 0.005,
-    borderRadius: 2,
+    height: height * 0.006,
+    borderRadius: 3,
     overflow: "hidden",
   },
   progressFill: {
     height: "100%",
-    borderRadius: 2,
+    opacity: 0.9,
+    borderRadius: 3,
   },
   content: {
     flex: 1,
@@ -337,6 +390,11 @@ const styles = StyleSheet.create({
     paddingVertical: height * 0.015,
     borderRadius: width * 0.02,
     gap: width * 0.02,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 3,
   },
   resetButtonText: {
     color: "white",
@@ -347,16 +405,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    paddingVertical: height * 0.015,
+    paddingVertical: height * 0.02,
     paddingHorizontal: width * 0.04,
-    borderTopWidth: 1,
-    borderTopColor: "#e0e0e0",
+    borderTopWidth: 0,
   },
-  navButton: {
-    padding: width * 0.015,
+  navCircle: {
+    padding: width * 0.03,
+    borderRadius: width * 0.1,
+    shadowColor: "#000",
+    shadowOpacity: 0.18,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 4,
   },
   contactButton: {
-    padding: width * 0.02,
-    borderRadius: width * 0.1,
+    padding: width * 0.035,
+    borderRadius: width * 0.12,
+    shadowColor: "#000",
+    shadowOpacity: 0.22,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 5,
   },
 });

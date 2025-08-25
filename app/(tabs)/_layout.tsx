@@ -24,7 +24,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Swipe",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <TabBarIcon name="swap-horizontal" color={color} />
           ),
           headerShown: false,
@@ -34,7 +34,9 @@ export default function TabLayout() {
         name="explore"
         options={{
           title: "Search",
-          tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
+          tabBarIcon: ({ color }: { color: string }) => (
+            <TabBarIcon name="search" color={color} />
+          ),
           headerShown: false,
         }}
       />
@@ -42,7 +44,9 @@ export default function TabLayout() {
         name="liked"
         options={{
           title: "Liked",
-          tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
+          tabBarIcon: ({ color }: { color: string }) => (
+            <TabBarIcon name="heart" color={color} />
+          ),
           headerShown: false,
         }}
       />
@@ -50,7 +54,7 @@ export default function TabLayout() {
         name="disliked"
         options={{
           title: "Disliked",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <TabBarIcon name="close-circle" color={color} />
           ),
           headerShown: false,
@@ -60,7 +64,7 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <TabBarIcon name="settings" color={color} />
           ),
           headerShown: false,

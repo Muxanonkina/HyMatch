@@ -45,7 +45,7 @@ export function JobCard({ job }: JobCardProps) {
   const colors = Colors[colorScheme ?? "light"];
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.cardBackground }]}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={[styles.jobTypeIcon, { fontSize: 32 }]}>
@@ -55,7 +55,7 @@ export function JobCard({ job }: JobCardProps) {
           <Text style={[styles.title, { color: colors.text }]}>
             {job.title}
           </Text>
-          <Text style={[styles.location, { color: colors.tabIconDefault }]}>
+          <Text style={[styles.location, { color: colors.secondaryText }]}>
             📍 {job.location}
           </Text>
         </View>
@@ -107,7 +107,7 @@ export function JobCard({ job }: JobCardProps) {
                 {
                   backgroundColor: job.availableDays.includes(day as DayOfWeek)
                     ? colors.tint
-                    : colors.tabIconDefault,
+                    : colors.border,
                 },
               ]}
             >
@@ -130,7 +130,7 @@ export function JobCard({ job }: JobCardProps) {
               key={index}
               style={[
                 styles.appealingBadge,
-                { backgroundColor: colors.tabIconDefault },
+                { backgroundColor: colors.border },
               ]}
             >
               <Text style={[styles.appealingText, { color: colors.text }]}>

@@ -240,13 +240,13 @@ export default function ExploreScreen() {
           style={[
             styles.salaryInput,
             {
-              backgroundColor: colors.background,
-              borderColor: colors.tabIconDefault,
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.border,
               color: colors.text,
             },
           ]}
           placeholder="Min"
-          placeholderTextColor={colors.tabIconDefault}
+          placeholderTextColor={colors.placeholder}
           value={minSalary}
           onChangeText={setMinSalary}
           keyboardType="numeric"
@@ -256,20 +256,20 @@ export default function ExploreScreen() {
           style={[
             styles.salaryInput,
             {
-              backgroundColor: colors.background,
-              borderColor: colors.tabIconDefault,
+              backgroundColor: colors.cardBackground,
+              borderColor: colors.border,
               color: colors.text,
             },
           ]}
           placeholder="Max"
-          placeholderTextColor={colors.tabIconDefault}
+          placeholderTextColor={colors.placeholder}
           value={maxSalary}
           onChangeText={setMaxSalary}
           keyboardType="numeric"
         />
       </View>
 
-      <Text style={[styles.resultsCount, { color: colors.tabIconDefault }]}>
+      <Text style={[styles.resultsCount, { color: colors.secondaryText }]}>
         {filteredJobs.length} jobs found
       </Text>
     </View>
@@ -277,11 +277,11 @@ export default function ExploreScreen() {
 
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
-      <Ionicons name="search-outline" size={64} color={colors.tabIconDefault} />
+      <Ionicons name="search-outline" size={64} color={colors.secondaryText} />
       <Text style={[styles.emptyText, { color: colors.text }]}>
         No jobs found
       </Text>
-      <Text style={[styles.emptySubtext, { color: colors.tabIconDefault }]}>
+      <Text style={[styles.emptySubtext, { color: colors.secondaryText }]}>
         Try adjusting your search criteria
       </Text>
     </View>
