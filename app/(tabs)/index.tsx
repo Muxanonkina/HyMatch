@@ -7,6 +7,7 @@ import React, { useCallback, useState } from "react";
 import {
   Alert,
   Dimensions,
+  Modal,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -20,8 +21,9 @@ const { width, height } = Dimensions.get("window");
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
-  const { likeJob, dislikeJob, resetMatches, state } = useApp();
+  const { likeJob, dislikeJob, resetMatches, state, sortJobs } = useApp();
   const [currentJobIndex, setCurrentJobIndex] = useState(0);
+  const [showHamburgerModal, setShowHamburgerModal] = useState(false);
 
   const currentJob = state.jobs[currentJobIndex];
 
@@ -60,7 +62,65 @@ export default function HomeScreen() {
   );
 
   const handleHamburgerMenu = () => {
-    Alert.alert("Menu", "Profile and language settings will be here");
+    setShowHamburgerModal(true);
+  };
+
+  const handleSortByWage = () => {
+    // Sort jobs by hourly wage (highest first)
+    const sortedJobs = [...state.jobs].sort((a, b) => {
+      const wageA = a.salary?.min || 0;
+      const wageB = b.salary?.min || 0;
+      return wageB - wageA;
+    });
+    sortJobs(sortedJobs);
+    setCurrentJobIndex(0);
+    Alert.alert("Sorted", "Jobs sorted by hourly wage (highest first)");
+    setShowHamburgerModal(false);
+  };
+
+  const handleSortByCommuteFromHome = () => {
+    // Sort jobs by commute time from home (shortest first)
+    const sortedJobs = [...state.jobs].sort((a, b) => {
+      const timeA = a.commutingTime || 999;
+      const timeB = b.commutingTime || 999;
+      return timeA - timeB;
+    });
+    sortJobs(sortedJobs);
+    setCurrentJobIndex(0);
+    Alert.alert(
+      "Sorted",
+      "Jobs sorted by commute time from home (shortest first)"
+    );
+    setShowHamburgerModal(false);
+  };
+
+  const handleSortByCommuteFromSchool = () => {
+    // Sort jobs by commute time from school (shortest first)
+    const sortedJobs = [...state.jobs].sort((a, b) => {
+      const timeA = a.commutingTime || 999;
+      const timeB = b.commutingTime || 999;
+      return timeA - timeB;
+    });
+    sortJobs(sortedJobs);
+    setCurrentJobIndex(0);
+    Alert.alert(
+      "Sorted",
+      "Jobs sorted by commute time from school (shortest first)"
+    );
+    setShowHamburgerModal(false);
+  };
+
+  const handleSortByPostingDate = () => {
+    // Sort jobs by posting date (newest first)
+    const sortedJobs = [...state.jobs].sort((a, b) => {
+      const dateA = new Date(a.postedDate || 0);
+      const dateB = new Date(b.postedDate || 0);
+      return dateB.getTime() - dateA.getTime();
+    });
+    sortJobs(sortedJobs);
+    setCurrentJobIndex(0);
+    Alert.alert("Sorted", "Jobs sorted by posting date (newest first)");
+    setShowHamburgerModal(false);
   };
 
   const handleFilter = () => {
@@ -291,6 +351,152 @@ export default function HomeScreen() {
           />
         </TouchableOpacity>
       </View>
+
+      {/* Hamburger Menu Modal */}
+      <Modal
+        visible={showHamburgerModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowHamburgerModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View
+            style={[styles.sideDrawer, { backgroundColor: colors.background }]}
+          >
+            {/* Header */}
+            <View style={styles.drawerHeader}>
+              <Text style={[styles.drawerTitle, { color: colors.text }]}>
+                Sort & Filter Options
+              </Text>
+              <TouchableOpacity
+                onPress={() => setShowHamburgerModal(false)}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close" size={24} color={colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            {/* Menu Items */}
+            <View style={styles.drawerContent}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={handleSortByWage}
+              >
+                <View style={styles.menuItemContent}>
+                  <Ionicons name="cash" size={24} color={colors.tint} />
+                  <View style={styles.menuItemText}>
+                    <Text
+                      style={[styles.menuItemTitle, { color: colors.text }]}
+                    >
+                      時給順
+                    </Text>
+                    <Text
+                      style={[
+                        styles.menuItemSubtitle,
+                        { color: colors.secondaryText },
+                      ]}
+                    >
+                      Hourly Wage (Highest First)
+                    </Text>
+                  </View>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={20}
+                  color={colors.tabIconDefault}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={handleSortByCommuteFromHome}
+              >
+                <View style={styles.menuItemContent}>
+                  <Ionicons name="home" size={24} color={colors.tint} />
+                  <View style={styles.menuItemText}>
+                    <Text
+                      style={[styles.menuItemTitle, { color: colors.text }]}
+                    >
+                      通勤時間（自宅から）
+                    </Text>
+                    <Text
+                      style={[
+                        styles.menuItemSubtitle,
+                        { color: colors.secondaryText },
+                      ]}
+                    >
+                      Commute from Home (Shortest First)
+                    </Text>
+                  </View>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={20}
+                  color={colors.tabIconDefault}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={handleSortByCommuteFromSchool}
+              >
+                <View style={styles.menuItemContent}>
+                  <Ionicons name="school" size={24} color={colors.tint} />
+                  <View style={styles.menuItemText}>
+                    <Text
+                      style={[styles.menuItemTitle, { color: colors.text }]}
+                    >
+                      通勤時間（学校から）
+                    </Text>
+                    <Text
+                      style={[
+                        styles.menuItemSubtitle,
+                        { color: colors.secondaryText },
+                      ]}
+                    >
+                      Commute from School (Shortest First)
+                    </Text>
+                  </View>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={20}
+                  color={colors.tabIconDefault}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={handleSortByPostingDate}
+              >
+                <View style={styles.menuItemContent}>
+                  <Ionicons name="calendar" size={24} color={colors.tint} />
+                  <View style={styles.menuItemText}>
+                    <Text
+                      style={[styles.menuItemTitle, { color: colors.text }]}
+                    >
+                      投稿日順
+                    </Text>
+                    <Text
+                      style={[
+                        styles.menuItemSubtitle,
+                        { color: colors.secondaryText },
+                      ]}
+                    >
+                      Posting Date (Newest First)
+                    </Text>
+                  </View>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={20}
+                  color={colors.tabIconDefault}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -426,5 +632,66 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 5,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  sideDrawer: {
+    width: "80%",
+    height: "70%",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  drawerHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: width * 0.04,
+    paddingVertical: height * 0.02,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.1)",
+  },
+  drawerTitle: {
+    fontSize: width * 0.05,
+    fontWeight: "bold",
+  },
+  closeButton: {
+    padding: width * 0.01,
+  },
+  drawerContent: {
+    paddingHorizontal: width * 0.04,
+    paddingVertical: height * 0.02,
+  },
+  menuItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: height * 0.015,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.05)",
+  },
+  menuItemContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: width * 0.02,
+  },
+  menuItemText: {
+    flex: 1,
+  },
+  menuItemTitle: {
+    fontSize: width * 0.04,
+    fontWeight: "600",
+  },
+  menuItemSubtitle: {
+    fontSize: width * 0.03,
   },
 });

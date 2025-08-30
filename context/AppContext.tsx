@@ -163,6 +163,7 @@ interface AppContextType {
   setFilterOptions: (options: FilterOptions) => void;
   setSortOption: (option: SortOption) => void;
   resetMatches: () => void;
+  sortJobs: (sortedJobs: Job[]) => void;
   saveToStorage: () => Promise<void>;
   loadFromStorage: () => Promise<void>;
 }
@@ -286,6 +287,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "RESET_MATCHES" });
   };
 
+  const sortJobs = (sortedJobs: Job[]) => {
+    dispatch({ type: "SET_JOBS", payload: sortedJobs });
+  };
+
   const value: AppContextType = {
     state,
     dispatch,
@@ -296,6 +301,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setFilterOptions,
     setSortOption,
     resetMatches,
+    sortJobs,
     saveToStorage,
     loadFromStorage,
   };
