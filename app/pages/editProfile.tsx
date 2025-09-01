@@ -1,7 +1,8 @@
+import ProfileForm from "@/components/ProfileForm";
 import { Colors } from "@/constants/Colors";
 import { scale } from "@/hooks/useResponsive";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -18,10 +19,21 @@ const { width, height } = Dimensions.get("window");
 export default function EditProfileScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const params = useLocalSearchParams();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
 
   const handleBack = () => {
+    router.back();
+  };
+
+  const handleSaveProfile = (profile: any) => {
+    // Handle profile saving logic here
+    console.log("Profile saved:", profile);
+    // You can add AsyncStorage saving logic here
+    // AsyncStorage.setItem('userProfile', JSON.stringify(profile));
+
+    // Show success message and navigate back
     router.back();
   };
 
@@ -33,19 +45,14 @@ export default function EditProfileScreen() {
           <Ionicons name="arrow-back" size={scale(24)} color={colors.text} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>
-          {t("edit_profile")}
+          {params.title || t("edit_profile")}
         </Text>
         <View style={styles.placeholder} />
       </View>
 
-      {/* Content */}
+      {/* Profile Form Content */}
       <View style={styles.content}>
-        <Text style={[styles.message, { color: colors.text }]}>
-          Edit Profile Page
-        </Text>
-        <Text style={[styles.subMessage, { color: colors.secondaryText }]}>
-          This page will contain profile editing functionality
-        </Text>
+        <ProfileForm onSaveProfile={handleSaveProfile} />
       </View>
     </View>
   );

@@ -171,7 +171,7 @@ export function SwipeCard({
             { borderColor: "#4CAF50", backgroundColor: "transparent" },
           ]}
         >
-          <View style={[styles.overlayCircle, { backgroundColor: "#E8F5E8" }]}>
+          <View>
             <Text style={[styles.overlayText, { color: "#4CAF50" }]}>
               Choose
             </Text>
@@ -187,7 +187,7 @@ export function SwipeCard({
             { borderColor: "#F44336", backgroundColor: "transparent" },
           ]}
         >
-          <View style={[styles.overlayCircle, { backgroundColor: "#FFEBEE" }]}>
+          <View>
             <Text style={[styles.overlayText, { color: "#F44336" }]}>
               Refuse
             </Text>
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: scale(50),
+    borderRadius: scale(70),
     borderWidth: 4,
     zIndex: 1,
   },
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   overlayCircle: {
     width: scale(120),
     height: scale(120),
-    borderRadius: scale(60),
+    borderRadius: scale(70),
     justifyContent: "center",
     alignItems: "center",
   },

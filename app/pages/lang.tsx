@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import { scale } from "@/hooks/useResponsive";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -18,6 +18,7 @@ const { width, height } = Dimensions.get("window");
 export default function LanguageScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const params = useLocalSearchParams();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
 
@@ -27,13 +28,14 @@ export default function LanguageScreen() {
 
   const changeLanguage = (language: string) => {
     i18n.changeLanguage(language);
+    // Optionally show a success message
+    console.log(`Language changed to: ${language}`);
   };
 
   const languages = [
     { code: "en", name: "English", flag: "🇺🇸" },
     { code: "ja", name: "日本語", flag: "🇯🇵" },
-    { code: "ko", name: "한국어", flag: "🇰🇷" },
-    { code: "zh", name: "中文", flag: "🇨🇳" },
+    { code: "uz", name: "O'zbek", flag: "🇺🇿" },
   ];
 
   return (
@@ -44,7 +46,7 @@ export default function LanguageScreen() {
           <Ionicons name="arrow-back" size={scale(24)} color={colors.text} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>
-          {t("change_language")}
+          {params.title || t("change_language")}
         </Text>
         <View style={styles.placeholder} />
       </View>

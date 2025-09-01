@@ -129,6 +129,9 @@ const resources = {
       job_list: "仕事一覧",
       edit_profile: "プロフィール編集",
       change_language: "言語変更",
+      logout: "ログアウト",
+      logout_confirmation_title: "ログアウト",
+      logout_confirmation_message: "ログアウトしますか？",
     },
   },
   en: {
@@ -256,6 +259,9 @@ const resources = {
       job_list: "Job List",
       edit_profile: "Edit Profile",
       change_language: "Change Language",
+      logout: "Logout",
+      logout_confirmation_title: "Logout",
+      logout_confirmation_message: "Are you sure you want to logout?",
     },
   },
   uz: {
@@ -383,6 +389,9 @@ const resources = {
       job_list: "Ishlar ro'yxati",
       edit_profile: "Profilni tahrirlash",
       change_language: "Tilni o'zgartirish",
+      logout: "Chiqish",
+      logout_confirmation_title: "Chiqish",
+      logout_confirmation_message: "Chiqishni xohlaysizmi?",
     },
   },
 };
