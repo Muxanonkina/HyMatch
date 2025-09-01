@@ -124,6 +124,11 @@ const resources = {
       japaneseLevelFilter: "日本語レベル",
       commutingConvenience: "通勤の利便性",
       importantFactors: "重視する点",
+
+      // Header and Navigation
+      job_list: "仕事一覧",
+      edit_profile: "プロフィール編集",
+      change_language: "言語変更",
     },
   },
   en: {
@@ -246,6 +251,11 @@ const resources = {
       japaneseLevelFilter: "Japanese Level",
       commutingConvenience: "Commuting Convenience",
       importantFactors: "Important Factors",
+
+      // Header and Navigation
+      job_list: "Job List",
+      edit_profile: "Edit Profile",
+      change_language: "Change Language",
     },
   },
   uz: {
@@ -368,6 +378,11 @@ const resources = {
       japaneseLevelFilter: "Yapon tili darajasi",
       commutingConvenience: "Ishga borish qulayligi",
       importantFactors: "Muhim omillar",
+
+      // Header and Navigation
+      job_list: "Ishlar ro'yxati",
+      edit_profile: "Profilni tahrirlash",
+      change_language: "Tilni o'zgartirish",
     },
   },
 };

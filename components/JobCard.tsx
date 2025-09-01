@@ -1,5 +1,12 @@
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import {
+  borderRadius,
+  fontSize,
+  scale,
+  spacing,
+  verticalScale,
+} from "@/hooks/useResponsive";
 import { DayOfWeek, Job, JobType } from "@/types";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -45,7 +52,9 @@ export function JobCard({ job }: JobCardProps) {
   const colors = Colors[colorScheme ?? "light"];
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.cardBackground }]}>
+    <View
+      style={[styles.container, { backgroundColor: colors.cardBackground }]}
+    >
       {/* Header */}
       <View style={styles.header}>
         <Text style={[styles.jobTypeIcon, { fontSize: 32 }]}>
@@ -154,9 +163,9 @@ export function JobCard({ job }: JobCardProps) {
 const styles = StyleSheet.create({
   container: {
     width: width * 0.9,
-    maxWidth: 350,
-    borderRadius: 20,
-    padding: 20,
+    maxWidth: scale(350),
+    borderRadius: borderRadius.xl,
+    padding: spacing.lg,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -169,109 +178,109 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 15,
+    marginBottom: spacing.md,
   },
   jobTypeIcon: {
-    marginRight: 15,
+    marginRight: spacing.md,
   },
   titleContainer: {
     flex: 1,
   },
   title: {
-    fontSize: 18,
+    fontSize: fontSize.xl,
     fontWeight: "bold",
-    marginBottom: 5,
+    marginBottom: spacing.xs,
   },
   location: {
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   salaryContainer: {
-    marginBottom: 15,
+    marginBottom: spacing.md,
   },
   salaryLabel: {
-    fontSize: 14,
-    marginBottom: 5,
+    fontSize: fontSize.md,
+    marginBottom: spacing.xs,
   },
   salary: {
-    fontSize: 20,
+    fontSize: fontSize.title,
     fontWeight: "bold",
   },
   requirementsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 15,
+    marginBottom: spacing.md,
   },
   requirement: {
     alignItems: "center",
   },
   requirementLabel: {
-    fontSize: 12,
-    marginBottom: 5,
+    fontSize: fontSize.sm,
+    marginBottom: spacing.xs,
   },
   requirementValue: {
-    fontSize: 16,
+    fontSize: fontSize.lg,
     fontWeight: "600",
   },
   badge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.lg,
   },
   badgeText: {
     color: "white",
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: "bold",
   },
   daysContainer: {
-    marginBottom: 15,
+    marginBottom: spacing.md,
   },
   daysLabel: {
-    fontSize: 14,
-    marginBottom: 8,
+    fontSize: fontSize.md,
+    marginBottom: spacing.sm,
   },
   daysList: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   dayBadge: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: scale(30),
+    height: scale(30),
+    borderRadius: scale(15),
     justifyContent: "center",
     alignItems: "center",
   },
   dayText: {
     color: "white",
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: "bold",
   },
   appealingContainer: {
-    marginBottom: 15,
+    marginBottom: spacing.md,
   },
   appealingLabel: {
-    fontSize: 14,
-    marginBottom: 8,
+    fontSize: fontSize.md,
+    marginBottom: spacing.sm,
   },
   appealingList: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: spacing.sm,
   },
   appealingBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: scale(10),
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.lg,
   },
   appealingText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
   },
   descriptionContainer: {
     borderTopWidth: 1,
     borderTopColor: "#e0e0e0",
-    paddingTop: 15,
+    paddingTop: spacing.md,
   },
   description: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: fontSize.md,
+    lineHeight: verticalScale(20),
   },
 });

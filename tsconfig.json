@@ -13,8 +13,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
-    },
-    "customConditions": ["yourCustomCondition"] // Example custom condition
+    }
   },
   "exclude": [
     "node_modules",
@@ -23,5 +22,5 @@
     "jest.config.js"
   ],
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
-  "extends": "expo/tsconfig.base"
+  "extends": "expo/tsconfig.base.json"
 }
